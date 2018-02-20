@@ -1,4 +1,10 @@
 #!/usr/bin/env node
-import program from '..';
+import program from 'commander';
+import version from '../../package.json';
 
-program.parse(process.argv);
+program
+  .version(version)
+  .description('Compares two files, shows how they differ.')
+  .arguments('<firstConfig> <secondConfig>')
+  .option('-f, --format [type]', 'output format')
+  .parse(process.argv);

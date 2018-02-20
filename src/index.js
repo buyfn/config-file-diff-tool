@@ -1,10 +1,28 @@
-import program from 'commander';
-import { version } from '../package.json';
+import fs from 'fs';
+import _ from 'lodash';
 
-program
-  .version(version)
-  .description('Compares two files, shows how they differ.')
-  .arguments('<firstConfig> <secondConfig>')
-  .option('-f, --format [type]', 'output format');
+const gendiff = (pathToFile1, pathToFile2) => {
+  const fileContent1 = JSON.parse(fs.readFileSync(pathToFile1));
+  const fileContent2 = JSON.parse(fs.readFileSync(pathToFile2));
 
-export default program;
+  const keys = _.union([...Object.keys(fileContent1), ...Object.keys(fileContent2)]);
+
+  const diff = keys.reduce((acc, key) => {
+    if (fileContent1[key] && fileContent2[key]) {
+      if (fileContent1[key] !== fileContent2[key]) {
+        return [...acc, `  + ${key}: ${fileContent2[key]}`, `  - ${key}: ${fileContent1[key]}`];
+      }
+      return [...acc, `  ${key}: ${fileContent1[key]}`];
+    }
+    if (fileContent1[key]) {
+      return [...acc, `  - ${key}: ${fileContent1[key]}`];
+    }
+    return [...acc, `  + ${key}: ${fileContent2[key]}`];
+  }, []);
+
+  const diffString = `{\n${diff.join('\n')}\n}`;
+
+  return diffString;
+};
+
+export default gendiff;
