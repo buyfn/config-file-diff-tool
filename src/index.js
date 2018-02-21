@@ -1,11 +1,13 @@
 import fs from 'fs';
 import array from 'lodash/array';
 import jsyaml from 'js-yaml';
+import ini from 'ini';
 
 const parse = (pathToFile) => {
   const parseMap = {
     json: p => JSON.parse(fs.readFileSync(p)),
     yaml: p => jsyaml.load(fs.readFileSync(p)),
+    ini: p => ini.parse(fs.readFileSync(p, 'utf8')),
   };
 
   const parts = pathToFile.split('.');
