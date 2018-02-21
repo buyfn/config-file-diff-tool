@@ -1,9 +1,22 @@
 import fs from 'fs';
 import array from 'lodash/array';
+import jsyaml from 'js-yaml';
+
+const parse = (pathToFile) => {
+  const parseMap = {
+    json: p => JSON.parse(fs.readFileSync(p)),
+    yaml: p => jsyaml.load(fs.readFileSync(p)),
+  };
+
+  const parts = pathToFile.split('.');
+  const format = parts[parts.length - 1];
+
+  return parseMap[format](pathToFile);
+};
 
 const gendiff = (pathToFile1, pathToFile2) => {
-  const fileContent1 = JSON.parse(fs.readFileSync(pathToFile1));
-  const fileContent2 = JSON.parse(fs.readFileSync(pathToFile2));
+  const fileContent1 = parse(pathToFile1);
+  const fileContent2 = parse(pathToFile2);
 
   const keys = array.union(Object.keys(fileContent1), Object.keys(fileContent2));
 
