@@ -3,22 +3,26 @@ import array from 'lodash/array';
 import jsyaml from 'js-yaml';
 import ini from 'ini';
 
-const parse = (pathToFile) => {
-  const parseMap = {
-    json: p => JSON.parse(fs.readFileSync(p)),
-    yaml: p => jsyaml.load(fs.readFileSync(p)),
-    ini: p => ini.parse(fs.readFileSync(p, 'utf8')),
+const read = (pathToFile) => {
+  const format = array.last(pathToFile.split('.'));
+  const content = fs.readFileSync(pathToFile, 'utf8');
+
+  return { content, format };
+};
+
+const parse = (file) => {
+  const parserMap = {
+    json: JSON.parse,
+    yaml: jsyaml.load,
+    ini: ini.parse,
   };
 
-  const parts = pathToFile.split('.');
-  const format = parts[parts.length - 1];
-
-  return parseMap[format](pathToFile);
+  return parserMap[file.format](file.content);
 };
 
 const gendiff = (pathToFile1, pathToFile2) => {
-  const fileContent1 = parse(pathToFile1);
-  const fileContent2 = parse(pathToFile2);
+  const fileContent1 = parse(read(pathToFile1));
+  const fileContent2 = parse(read(pathToFile2));
 
   const keys = array.union(Object.keys(fileContent1), Object.keys(fileContent2));
 
