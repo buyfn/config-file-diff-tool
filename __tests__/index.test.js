@@ -1,7 +1,7 @@
 import fs from 'fs';
 import gendiff from '../src';
 
-describe('gendiff', () => {
+describe('gendiff flat', () => {
   test('json', () => {
     const pathToFile1 = '__tests__/__fixtures__/json/before.json';
     const pathToFile2 = '__tests__/__fixtures__/json/after.json';
@@ -20,6 +20,15 @@ describe('gendiff', () => {
     const pathToFile1 = '__tests__/__fixtures__/ini/before.ini';
     const pathToFile2 = '__tests__/__fixtures__/ini/after.ini';
     const result = fs.readFileSync('__tests__/__fixtures__/ini/expected.txt', 'utf8');
+    expect(gendiff(pathToFile1, pathToFile2)).toBe(result);
+  });
+});
+
+describe('gendiff nested', () => {
+  test('json', () => {
+    const pathToFile1 = '__tests__/__fixtures__/json/before_nested.json';
+    const pathToFile2 = '__tests__/__fixtures__/json/after_nested.json';
+    const result = fs.readFileSync('__tests__/__fixtures__/json/expected_nested.txt', 'utf8');
     expect(gendiff(pathToFile1, pathToFile2)).toBe(result);
   });
 });
