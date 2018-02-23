@@ -17,12 +17,9 @@ const parse = (text, format) => {
 };
 
 const buildAST = (obj1, obj2) => {
-  const iter = (acc, ks) => {
-    if (ks.length === 0) {
-      return acc;
-    }
+  const keys = _.union(_.keys(obj1), _.keys(obj2));
 
-    const key = ks[0];
+  const ast = keys.reduce((acc, key) => {
     const before = obj1[key];
     const after = obj2[key];
 
@@ -32,7 +29,7 @@ const buildAST = (obj1, obj2) => {
         status: 'nested',
         children: buildAST(before, after),
       };
-      return iter([...acc, node], _.tail(ks));
+      return [...acc, node];
     }
     if (before && after) {
       if (before === after) {
@@ -41,7 +38,7 @@ const buildAST = (obj1, obj2) => {
           status: 'unchanged',
           before,
         };
-        return iter([...acc, node], _.tail(ks));
+        return [...acc, node];
       }
       const deletedNode = {
         key,
@@ -53,7 +50,7 @@ const buildAST = (obj1, obj2) => {
         status: 'added',
         after,
       };
-      return iter([...acc, deletedNode, addedNode], _.tail(ks));
+      return [...acc, deletedNode, addedNode];
     }
     if (!before) {
       const node = {
@@ -61,19 +58,17 @@ const buildAST = (obj1, obj2) => {
         status: 'added',
         after,
       };
-      return iter([...acc, node], _.tail(ks));
+      return [...acc, node];
     }
     const node = {
       key,
       status: 'deleted',
       before,
     };
-    return iter([...acc, node], _.tail(ks));
-  };
+    return [...acc, node];
+  }, []);
 
-  const keys = _.union(_.keys(obj1), _.keys(obj2));
-
-  return iter([], keys);
+  return ast;
 };
 
 const render = (ast, depth = 1) => {
