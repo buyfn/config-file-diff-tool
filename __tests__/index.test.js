@@ -31,4 +31,18 @@ describe('gendiff nested', () => {
     const result = fs.readFileSync('__tests__/__fixtures__/json/expected_nested.txt', 'utf8');
     expect(gendiff(pathToFile1, pathToFile2)).toBe(result);
   });
+
+  test('yaml', () => {
+    const pathToFile1 = '__tests__/__fixtures__/yaml/before_nested.yaml';
+    const pathToFile2 = '__tests__/__fixtures__/yaml/after_nested.yaml';
+    const result = fs.readFileSync('__tests__/__fixtures__/yaml/expected_nested.txt', 'utf8');
+    expect(gendiff(pathToFile1, pathToFile2)).toBe(result);
+  });
+
+  test('ini', () => {
+    const pathToFile1 = '__tests__/__fixtures__/ini/before_nested.ini';
+    const pathToFile2 = '__tests__/__fixtures__/ini/after_nested.ini';
+    const result = fs.readFileSync('__tests__/__fixtures__/ini/expected_nested.txt', 'utf8');
+    expect(gendiff(pathToFile1, pathToFile2)).toBe(result);
+  });
 });
