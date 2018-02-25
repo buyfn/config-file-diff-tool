@@ -25,8 +25,6 @@ const render = (ast, depth = 1) => {
         return `${indent}${key}: ${render(children, depth + 1)}`;
       case 'unchanged':
         return `${indent}${key}: ${valToStr(before)}`;
-      case 'updated':
-        return `${indent.slice(2)}- ${key}: ${valToStr(before)}\n${indent.slice(2)}+ ${key}: ${valToStr(after)}`;
       case 'deleted':
         return `${indent.slice(2)}- ${key}: ${valToStr(before)}`;
       case 'added':
@@ -36,7 +34,7 @@ const render = (ast, depth = 1) => {
     }
   };
 
-  const rendered = ast.reduce((acc, node) => ([...acc, toStr(node)]), []);
+  const rendered = _.flatten(ast).map(toStr);
   return `{\n${rendered.join('\n')}\n${indent.slice(tabWidth)}}`;
 };
 

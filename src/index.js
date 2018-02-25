@@ -32,10 +32,10 @@ const buildAST = (obj1, obj2) => {
         const node = { key, type: 'unchanged', before };
         return [...acc, node];
       }
-      const node = {
-        key, type: 'updated', before, after,
-      };
-      return [...acc, node];
+
+      const oldNode = { key, type: 'deleted', before };
+      const newNode = { key, type: 'added', after };
+      return [...acc, [oldNode, newNode]];
     }
     if (!before) {
       const node = { key, type: 'added', after };
