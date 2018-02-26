@@ -19,31 +19,31 @@ const parse = (text, format) => {
 const buildAST = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2));
 
-  const ast = keys.reduce((acc, key) => {
+  const ast = keys.map((key) => {
     const before = obj1[key];
     const after = obj2[key];
 
     if ((before instanceof Object) && (after instanceof Object)) {
       const node = { key, type: 'nested', children: buildAST(before, after) };
-      return [...acc, node];
+      return node;
     }
     if (before && after) {
       if (before === after) {
         const node = { key, type: 'unchanged', before };
-        return [...acc, node];
+        return node;
       }
 
       const oldNode = { key, type: 'deleted', before };
       const newNode = { key, type: 'added', after };
-      return [...acc, [oldNode, newNode]];
+      return [oldNode, newNode];
     }
     if (!before) {
       const node = { key, type: 'added', after };
-      return [...acc, node];
+      return node;
     }
     const node = { key, type: 'deleted', before };
-    return [...acc, node];
-  }, []);
+    return node;
+  });
 
   return ast;
 };

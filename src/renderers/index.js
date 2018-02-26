@@ -1,16 +1,13 @@
-import nestedRenderer from './nested';
+import treeRenderer from './nested';
 import plainRenderer from './plain';
 import jsonRenderer from './json';
 
-const getRenderer = (format) => {
+const getRenderer = (format = treeRenderer) => {
   const rendererMap = {
+    tree: treeRenderer,
     plain: plainRenderer,
     json: jsonRenderer,
   };
-
-  if (!format) {
-    return nestedRenderer;
-  }
 
   return rendererMap[format];
 };
